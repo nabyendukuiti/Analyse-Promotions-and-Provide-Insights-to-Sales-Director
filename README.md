@@ -99,16 +99,16 @@ FROM cte;
 ```
 WITH cte AS( 
 SELECT
-	p.product_name,
+  p.product_name,
   p.category,
-	SUM(r.total_rev_before_promo) AS total_rev_before_promo,
+  SUM(r.total_rev_before_promo) AS total_rev_before_promo,
   SUM(r.total_rev_after_promo) AS total_rev_after_promo
 FROM dim_products p
 INNER JOIN fact_revenue r USING(product_code)
 GROUP BY 1,2
 )
 SELECT 
-	product_name,
+  product_name,
   category,
   ROUND(((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo),2) AS IR_percent
 FROM cte
@@ -144,7 +144,7 @@ LIMIT 10;
 > **2. Which are the bottom 10 stores when it comes to Incremental Sold Units (ISU) during the promotional period?**
 ```
 SELECT
-	store_id,
+  store_id,
   (SUM(quantity_sold_after_promo)-SUM(quantity_sold_before_promo))/SUM(quantity_sold_before_promo) AS ISU_percent
 FROM fact_events   
 GROUP BY 1
@@ -189,7 +189,7 @@ LIMIT 2;
 > **2. What are the bottom 2 promotion types in terms of their impact on Incremental Sold Units?**
 ```
 SELECT
-	promo_type,
+  promo_type,
   SUM(quantity_sold_before_promo) AS total_qty_sold_before_promo,
   SUM(quantity_sold_after_promo) AS total_qty_sold_after_promo,
   CONCAT(ROUND((SUM(quantity_sold_after_promo)-SUM(quantity_sold_before_promo))*100/SUM(quantity_sold_before_promo),2),'%') AS ISU_percent
@@ -204,7 +204,7 @@ LIMIT 2;
 > **3. Is there a significant difference in the performance of discount-based promotions versus BOGOF (Buy One Get One Free) or cashback promotions?**
 ```
 SELECT 
-	promo_type,
+  promo_type,
   CONCAT(ROUND(SUM(total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo
 FROM fact_revenue
 GROUP BY 1;
@@ -215,8 +215,8 @@ GROUP BY 1;
 > **4. Which promotions strike the best balance between Incremental Sold Units and maintaining healthy margins?**
 ```
 SELECT
-	r.promo_type,
-	ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
+  r.promo_type,
+  ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
   ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
 FROM fact_events e
 INNER JOIN fact_revenue r USING(event_id)
@@ -230,8 +230,8 @@ GROUP BY 1;
 > **4. Which promotions strike the best balance between Incremental Sold Units and maintaining healthy margins?**
 ```
 SELECT
-	r.promo_type,
-	ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
+  r.promo_type,
+  ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
   ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
 FROM fact_events e
 INNER JOIN fact_revenue r USING(event_id)
