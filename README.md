@@ -157,10 +157,10 @@ LIMIT 10;
 > **3. How does the performance of stores vary by city?**
 ```
 SELECT
-	s.city,
+  s.city,
   r.store_id, 
   r.promo_type,
-	(SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))/SUM(r.total_rev_before_promo) AS IR_percent
+  (SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))/SUM(r.total_rev_before_promo) AS IR_percent
 FROM dim_stores s
 INNER JOIN fact_revenue r USING(store_id)
 GROUP BY 1,2,3
@@ -173,8 +173,8 @@ ORDER BY 1,4;
 ### **Promotion type analysis**
 > **1. What are the top 2 promotion types that resulted in the highest Incremental Revenue?**
 ```
-SELECT 
-	promo_type,
+SELECT
+  promo_type,
   CONCAT(ROUND(SUM(total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
   CONCAT(ROUND(SUM(total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo,
   ROUND((SUM(total_rev_after_promo)-SUM(total_rev_before_promo))*100/SUM(total_rev_before_promo),2) AS IR_percent
