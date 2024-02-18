@@ -225,19 +225,47 @@ GROUP BY 1;
 #### Answer 4
 ![image](https://github.com/nabyendukuiti/Analyse-Promotions-and-Provide-Insights-to-Sales-Director/assets/140970847/ea8b1bbb-0217-4b73-845a-658a0d5492b7)
 
-
-
-> **4. Which promotions strike the best balance between Incremental Sold Units and maintaining healthy margins?**
+### **Product and category analysis**
+> **1. Which product categories saw the most significant lift in sales from the promotions?**
 ```
-SELECT
-  r.promo_type,
-  ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
-  ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
-FROM fact_events e
-INNER JOIN fact_revenue r USING(event_id)
-GROUP BY 1;
+SELECT 
+	p.category,
+	ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+FROM dim_products p
+INNER JOIN fact_revenue r USING(product_code)
+GROUP BY 1
+ORDER BY 2 DESC;
 ```
-#### Answer 4
-![image](https://github.com/nabyendukuiti/Analyse-Promotions-and-Provide-Insights-to-Sales-Director/assets/140970847/ea8b1bbb-0217-4b73-845a-658a0d5492b7)
+#### Answer 1
+![image](https://github.com/nabyendukuiti/Analyse-Promotions-and-Provide-Insights-to-Sales-Director/assets/140970847/f5acb182-fd27-4146-b502-eceacd171b71)
 
+> **2. Are there specific products that respond exceptionally well or poorly to promotions?**
+```
+SELECT 
+	p.product_name,
+    r.promo_type,
+	ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+FROM dim_products p
+INNER JOIN fact_revenue r USING(product_code)
+GROUP BY 1,2
+ORDER BY 3 DESC;
+```
+#### Answer 2
+![image](https://github.com/nabyendukuiti/Analyse-Promotions-and-Provide-Insights-to-Sales-Director/assets/140970847/d42bcc91-d2dd-46b1-b53e-550da3b647d6)
+19row(s) returned
 
+> **3. What is the correlation between product category and promotion type effectiveness?**
+```
+SELECT 
+	p.category,
+    r.promo_type,
+    CONCAT(ROUND(SUM(r.total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
+    CONCAT(ROUND(SUM(r.total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo,
+	ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+FROM dim_products p
+INNER JOIN fact_revenue r USING(product_code)
+GROUP BY 1,2
+ORDER BY 5 DESC;
+```
+#### Answer 3
+![image](https://github.com/nabyendukuiti/Analyse-Promotions-and-Provide-Insights-to-Sales-Director/assets/140970847/ae98bd7b-aba5-48b3-b95b-ebffe2200c0c)
