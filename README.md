@@ -252,7 +252,7 @@ ORDER BY 3 DESC;
 ```
 #### Answer 2
 ![image](https://github.com/nabyendukuiti/Analyse-Promotions-and-Provide-Insights-to-Sales-Director/assets/140970847/d42bcc91-d2dd-46b1-b53e-550da3b647d6)
-19row(s) returned
+19ROW(S) returned
 
 > **3. What is the correlation between product category and promotion type effectiveness?**
 ```
