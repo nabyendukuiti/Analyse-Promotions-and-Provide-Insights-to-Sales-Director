@@ -24,8 +24,8 @@ Task:
 > **1. Provide a list of products with a base price greater than 500 and that are featured in promo type of 'BOGOF (Buy One Get One Free).**
 ```
 SELECT
-  DISTINCT p.product_code,
-  p.product_name
+   DISTINCT p.product_code,
+   p.product_name
 FROM dim_products p
 INNER JOIN fact_events e USING(product_code)
 WHERE e.base_price > 500 and e.promo_type = 'BOGOF';
@@ -36,8 +36,8 @@ WHERE e.base_price > 500 and e.promo_type = 'BOGOF';
 > **2. Generate a report that provides an overview of the number of stores in each city.**
 ```
 SELECT
-  s.city,
-  COUNT(e.store_id) AS store_count
+   s.city,
+   COUNT(e.store_id) AS store_count
 FROM dim_stores s
 INNER JOIN fact_events e USING(store_id)
 GROUP BY s.city
@@ -50,20 +50,20 @@ ORDER BY 2 DESC;
 ```
 WITH CTE AS(
 SELECT 
-  c.campaign_id,
-  c.campaign_name,
-  CONCAT(ROUND(SUM(r.total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
-  CONCAT(ROUND(SUM(r.total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo
+   c.campaign_id,
+   c.campaign_name,
+   CONCAT(ROUND(SUM(r.total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
+   CONCAT(ROUND(SUM(r.total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo
 FROM dim_campaigns c
 INNER JOIN fact_revenue r USING(campaign_id)
 GROUP BY 1,2
 )
 SELECT 
-  campaign_id, 
-  campaign_name, 
-  total_rev_before_promo, 
-  total_rev_after_promo,
-  CONCAT(ROUND((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo),'%') AS percent_change
+   campaign_id, 
+   campaign_name, 
+   total_rev_before_promo, 
+   total_rev_after_promo,
+   CONCAT(ROUND((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo),'%') AS percent_change
 FROM CTE;
 ```
 #### Answer 3
@@ -75,11 +75,11 @@ key fields: category, isu%, and rank order.**
 ```
 WITH cte AS(    
 SELECT 
-  c.campaign_name,
-  p.category,
-  SUM(e.quantity_sold_before_promo) AS quantity_sold_before_promo,
-  SUM(e.quantity_sold_after_promo) AS quantity_sold_after_promo,
-  ROUND(((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))/SUM(e.quantity_sold_before_promo))* 100,2) AS ISU_percent
+   c.campaign_name,
+   p.category,
+   SUM(e.quantity_sold_before_promo) AS quantity_sold_before_promo,
+   SUM(e.quantity_sold_after_promo) AS quantity_sold_after_promo,
+   ROUND(((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))/SUM(e.quantity_sold_before_promo))* 100,2) AS ISU_percent
 FROM dim_campaigns c
 INNER JOIN fact_events e USING(campaign_id)
 INNER JOIN dim_products p USING(product_code)
@@ -87,9 +87,9 @@ WHERE c.campaign_name = 'Diwali'
 GROUP BY 1,2
 )
 SELECT
-  category,
-  CONCAT(ISU_percent,'%') AS ISU_percent,
-  DENSE_RANK()OVER(ORDER BY ISU_percent DESC) AS ranking
+   category,
+   CONCAT(ISU_percent,'%') AS ISU_percent,
+   DENSE_RANK()OVER(ORDER BY ISU_percent DESC) AS ranking
 FROM cte;
 ```
 #### Answer 4
@@ -99,18 +99,18 @@ FROM cte;
 ```
 WITH cte AS( 
 SELECT
-  p.product_name,
-  p.category,
-  SUM(r.total_rev_before_promo) AS total_rev_before_promo,
-  SUM(r.total_rev_after_promo) AS total_rev_after_promo
+   p.product_name,
+   p.category,
+   SUM(r.total_rev_before_promo) AS total_rev_before_promo,
+   SUM(r.total_rev_after_promo) AS total_rev_after_promo
 FROM dim_products p
 INNER JOIN fact_revenue r USING(product_code)
 GROUP BY 1,2
 )
 SELECT 
-  product_name,
-  category,
-  ROUND(((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo),2) AS IR_percent
+   product_name,
+   category,
+   ROUND(((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo),2) AS IR_percent
 FROM cte
 ORDER BY 3 DESC
 LIMIT 5;
@@ -123,17 +123,17 @@ LIMIT 5;
 ```
 WITH cte AS(
 SELECT
-  store_id,
-  ROUND(SUM(total_rev_before_promo)/1000000,1) AS total_rev_before_promo,
-  ROUND(SUM(total_rev_after_promo)/1000000,1) AS total_rev_after_promo
+   store_id,
+   ROUND(SUM(total_rev_before_promo)/1000000,1) AS total_rev_before_promo,
+   ROUND(SUM(total_rev_after_promo)/1000000,1) AS total_rev_after_promo
 FROM fact_revenue
 GROUP BY 1
 )
 SELECT 
-  store_id,
-  CONCAT(total_rev_before_promo,'M') AS total_rev_before_promo,
-  CONCAT(total_rev_after_promo,'M') AS total_rev_after_promo,
-  CONCAT(ROUND((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo,2),'%') AS IR_percent
+   store_id,
+   CONCAT(total_rev_before_promo,'M') AS total_rev_before_promo,
+   CONCAT(total_rev_after_promo,'M') AS total_rev_after_promo,
+   CONCAT(ROUND((total_rev_after_promo-total_rev_before_promo)*100/total_rev_before_promo,2),'%') AS IR_percent
 FROM cte
 ORDER BY 4 DESC
 LIMIT 10;
@@ -144,8 +144,8 @@ LIMIT 10;
 > **2. Which are the bottom 10 stores when it comes to Incremental Sold Units (ISU) during the promotional period?**
 ```
 SELECT
-  store_id,
-  (SUM(quantity_sold_after_promo)-SUM(quantity_sold_before_promo))/SUM(quantity_sold_before_promo) AS ISU_percent
+   store_id,
+   (SUM(quantity_sold_after_promo)-SUM(quantity_sold_before_promo))/SUM(quantity_sold_before_promo) AS ISU_percent
 FROM fact_events   
 GROUP BY 1
 ORDER BY 2
@@ -157,9 +157,9 @@ LIMIT 10;
 > **3. How does the performance of stores vary by city?**
 ```
 SELECT
-  s.city,
-  r.store_id, 
-  r.promo_type,
+   s.city,
+   r.store_id, 
+   r.promo_type,
   (SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))/SUM(r.total_rev_before_promo) AS IR_percent
 FROM dim_stores s
 INNER JOIN fact_revenue r USING(store_id)
@@ -174,10 +174,10 @@ ORDER BY 1,4;
 > **1. What are the top 2 promotion types that resulted in the highest Incremental Revenue?**
 ```
 SELECT
-  promo_type,
-  CONCAT(ROUND(SUM(total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
-  CONCAT(ROUND(SUM(total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo,
-  ROUND((SUM(total_rev_after_promo)-SUM(total_rev_before_promo))*100/SUM(total_rev_before_promo),2) AS IR_percent
+   promo_type,
+   CONCAT(ROUND(SUM(total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
+   CONCAT(ROUND(SUM(total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo,
+   ROUND((SUM(total_rev_after_promo)-SUM(total_rev_before_promo))*100/SUM(total_rev_before_promo),2) AS IR_percent
 FROM fact_revenue
 GROUP BY 1
 ORDER BY 4 DESC
@@ -189,10 +189,10 @@ LIMIT 2;
 > **2. What are the bottom 2 promotion types in terms of their impact on Incremental Sold Units?**
 ```
 SELECT
-  promo_type,
-  SUM(quantity_sold_before_promo) AS total_qty_sold_before_promo,
-  SUM(quantity_sold_after_promo) AS total_qty_sold_after_promo,
-  CONCAT(ROUND((SUM(quantity_sold_after_promo)-SUM(quantity_sold_before_promo))*100/SUM(quantity_sold_before_promo),2),'%') AS ISU_percent
+   promo_type,
+   SUM(quantity_sold_before_promo) AS total_qty_sold_before_promo,
+   SUM(quantity_sold_after_promo) AS total_qty_sold_after_promo,
+   CONCAT(ROUND((SUM(quantity_sold_after_promo)-SUM(quantity_sold_before_promo))*100/SUM(quantity_sold_before_promo),2),'%') AS ISU_percent
 FROM fact_events   
 GROUP BY 1
 ORDER BY 3
@@ -204,8 +204,8 @@ LIMIT 2;
 > **3. Is there a significant difference in the performance of discount-based promotions versus BOGOF (Buy One Get One Free) or cashback promotions?**
 ```
 SELECT 
-  promo_type,
-  CONCAT(ROUND(SUM(total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo
+   promo_type,
+   CONCAT(ROUND(SUM(total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo
 FROM fact_revenue
 GROUP BY 1;
 ```
@@ -215,9 +215,9 @@ GROUP BY 1;
 > **4. Which promotions strike the best balance between Incremental Sold Units and maintaining healthy margins?**
 ```
 SELECT
-  r.promo_type,
-  ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
-  ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+   r.promo_type,
+   ROUND((SUM(e.quantity_sold_after_promo)-SUM(e.quantity_sold_before_promo))*100/SUM(e.quantity_sold_before_promo),2) AS ISU_percent,
+   ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
 FROM fact_events e
 INNER JOIN fact_revenue r USING(event_id)
 GROUP BY 1;
@@ -229,8 +229,8 @@ GROUP BY 1;
 > **1. Which product categories saw the most significant lift in sales from the promotions?**
 ```
 SELECT 
-	p.category,
-	ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+   p.category,
+   ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
 FROM dim_products p
 INNER JOIN fact_revenue r USING(product_code)
 GROUP BY 1
@@ -242,9 +242,9 @@ ORDER BY 2 DESC;
 > **2. Are there specific products that respond exceptionally well or poorly to promotions?**
 ```
 SELECT 
-	p.product_name,
+    p.product_name,
     r.promo_type,
-	ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+    ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
 FROM dim_products p
 INNER JOIN fact_revenue r USING(product_code)
 GROUP BY 1,2
@@ -257,11 +257,11 @@ ORDER BY 3 DESC;
 > **3. What is the correlation between product category and promotion type effectiveness?**
 ```
 SELECT 
-	p.category,
+    p.category,
     r.promo_type,
     CONCAT(ROUND(SUM(r.total_rev_before_promo)/1000000),' ','M') AS total_rev_before_promo,
     CONCAT(ROUND(SUM(r.total_rev_after_promo)/1000000),' ','M') AS total_rev_after_promo,
-	ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
+    ROUND((SUM(r.total_rev_after_promo)-SUM(r.total_rev_before_promo))*100/SUM(r.total_rev_before_promo),2) AS IR_percent
 FROM dim_products p
 INNER JOIN fact_revenue r USING(product_code)
 GROUP BY 1,2
