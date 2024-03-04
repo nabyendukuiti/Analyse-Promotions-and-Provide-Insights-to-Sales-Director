@@ -26,7 +26,7 @@ ADD base_price_after_promo float;
 UPDATE fact_events
 SET base_price_after_promo =	
 	CASE
-		WHEN promo_type = '25% OFF' THEN base_price*0.75
+	WHEN promo_type = '25% OFF' THEN base_price*0.75
         WHEN promo_type = '33% OFF' THEN base_price*0.67
         WHEN promo_type = '50% OFF' THEN base_price*0.50
         WHEN promo_type = 'BOGOF' THEN base_price*2*0.50
@@ -52,8 +52,8 @@ SET rev_after_promo = `quantity_sold(after_promo)`*base_price_after_promo;
 ## **Ad-Hoc requests analysis**
 > **1. Provide a list of products with a base price greater than 500 and that are featured in promo type of 'BOGOF (Buy One Get One Free).**
 ```
-SELECT 
-	DISTINCT p.product_code,
+SELECT
+    DISTINCT p.product_code,
     p.product_name
 FROM dim_products p
 INNER JOIN fact_events e USING(product_code)
@@ -65,7 +65,7 @@ WHERE e.base_price > 500 AND e.promo_type = 'BOGOF';
 > **2. Generate a report that provides an overview of the number of stores in each city.**
 ```
 SELECT 
-	s.city, 
+    s.city, 
     COUNT(DISTINCT e.store_id) AS store_count
 FROM dim_stores s
 INNER JOIN fact_events e USING(store_id)
