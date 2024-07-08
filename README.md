@@ -6,7 +6,7 @@
 - [Analysis](#analysis)
     - [Data manipulation](#data-manipulation)
     - [Ad-Hoc requests analysis](#Ad-Hoc-requests-analysis)
-- [Power Bi Report](https://www.novypro.com/project/-analyse-promotions-and-provide-tangible-insights-to-sales-director-power-bi)
+- [Power Bi Report](https://app.powerbi.com/groups/me/reports/a8aeab5c-07d7-4546-8cfe-bf956d7fe6f3/8df026711f41610dc290?experience=power-bi&bookmarkGuid=1150f02c0a898a302262)
 
 ***
 
